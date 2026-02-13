@@ -5,6 +5,8 @@ FROM node:20-slim AS base
 RUN apt-get update && apt-get install -y openssl python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+ENV DATABASE_URL="file:./prisma/dev.db"
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Install dependencies
 COPY package*.json ./
@@ -16,8 +18,6 @@ RUN npx prisma generate
 
 # Build application
 COPY . .
-# Provide a dummy DATABASE_URL for the build phase
-ENV DATABASE_URL="file:/data/dev.db"
 RUN npm run build
 
 # Production image

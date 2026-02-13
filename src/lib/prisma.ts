@@ -10,5 +10,9 @@ export const getPrisma = () => {
     return globalForPrisma.prisma;
 };
 
-// Also keep the old export for compatibility but make it lazy
-export const prisma = getPrisma();
+// Also export a lazy prisma object to avoid initialization errors during build
+export const prisma = new Proxy({} as PrismaClient, {
+    get: (target, prop) => {
+        return (getPrisma() as any)[prop];
+    }
+});

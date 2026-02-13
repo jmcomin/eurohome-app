@@ -4,6 +4,10 @@ import { PrismaClient } from "@prisma/client";
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 export const getPrisma = () => {
+    // Ensure DATABASE_URL is set during build-time even if next.js isolation is strict
+    if (!process.env.DATABASE_URL && typeof window === 'undefined') {
+        process.env.DATABASE_URL = "file:./prisma/dev.db";
+    }
     if (!globalForPrisma.prisma) {
         globalForPrisma.prisma = new PrismaClient();
     }

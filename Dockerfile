@@ -12,6 +12,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY package*.json ./
 COPY prisma ./prisma
 RUN npm ci
+RUN touch prisma/dev.db
 
 # Generate Prisma Client
 RUN npx prisma generate

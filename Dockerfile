@@ -16,6 +16,8 @@ RUN npx prisma generate
 
 # Build application
 COPY . .
+# Provide a dummy DATABASE_URL for the build phase
+ENV DATABASE_URL="file:/data/dev.db"
 RUN npm run build
 
 # Production image

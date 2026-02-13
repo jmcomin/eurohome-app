@@ -1,0 +1,139 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Promocion {
+  id                 String      @id @default(uuid())
+  nombre             String
+  comision_total_pct Float       @default(6.0)
+  iva_porcentaje     Float       @default(10.0)
+  hito_1_pct         Float       @default(15.0)
+  hito_2_pct         Float       @default(30.0)
+  reparto_hito_1     Float       @default(50.0)
+  reparto_hito_2     Float       @default(50.0)
+  viviendas          Vivienda[]
+  operaciones        Operacion[]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+}
+
+model Vivienda {
+  id               String      @id @default(uuid())
+  promocionId      String
+  promocion        Promocion   @relation(fields: [promocionId], references: [id])
+  codigo           String
+  nombre           String?
+  planta           String
+  letra            String
+  precio_sin_iva   Float
+  operaciones      Operacion[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  @@unique([promocionId, codigo])
+}
+
+model Cliente {
+  id               String      @id @default(uuid())
+  nif_pasaporte    String      @unique
+  nombre           String
+  email            String?
+  telefono         String?
+  operaciones      Operacion[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Agente {
+  id               String      @id @default(uuid())
+  nombre           String
+  email            String?
+  telefono         String?
+  comision_base_pct Float      @default(0.0)
+  operaciones      Operacion[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Operacion {
+  id                 String           @id @default(uuid())
+  viviendaId         String
+  vivienda           Vivienda         @relation(fields: [viviendaId], references: [id])
+  clienteId          String
+  cliente            Cliente          @relation(fields: [clienteId], references: [id])
+  promocionId        String
+  promocion          Promocion        @relation(fields: [promocionId], references: [id])
+  agenteId           String?
+  agente             Agente?         @relation(fields: [agenteId], references: [id])
+  pct_comision_agente Float          @default(0.0)
+  estado             EstadoOperacion @default(ACTIVA)
+  pagos              Pago[]
+  tramos             TramoComision[]
+  fecha_inicio       DateTime         @default(now())
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+enum EstadoOperacion {
+  ACTIVA
+  CANCELADA
+}
+
+model Pago {
+  id           String    @id @default(uuid())
+  operacionId  String
+  operacion    Operacion @relation(fields: [operacionId], references: [id])
+  importe      Float
+  fecha        DateTime
+  metodo       String?
+  referencia   String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model TramoComision {
+  id               String      @id @default(uuid())
+  operacionId      String
+  operacion        Operacion   @relation(fields: [operacionId], references: [id])
+  tipo             TipoTramo
+  base_imponible   Float
+  iva              Float
+  facturable       Boolean     @default(false)
+  fecha_facturable DateTime?
+  validado         Boolean     @default(false)
+  fecha_validacion DateTime?
+  factura          Factura?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+enum TipoTramo {
+  EUROHOME_1
+  EUROHOME_2
+  AGENTE
+}
+
+model Factura {
+  id               String        @id @default(uuid())
+  tramoId          String        @unique
+  tramo            TramoComision @relation(fields: [tramoId], references: [id])
+  numero           String        @unique
+  fecha_emision    DateTime      @default(now())
+  estado           EstadoFactura @default(BORRADOR)
+  pdf_path         String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+enum EstadoFactura {
+  BORRADOR
+  EMITIDA
+  COBRADA
+  ANULADA
+  RECTIFICADA
+}

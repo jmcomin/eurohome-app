@@ -1,0 +1,74 @@
+/* src/app/globals.css */
+@import "tailwindcss";
+
+/* Tailwind CSS v4 Theme Configuration */
+@theme {
+  --color-brand-primary: #20416C;
+  --color-brand-secondary: #97a8b8;
+  --font-brand: "Inter", sans-serif;
+}
+
+:root {
+  --foreground: #171717;
+  --background: #fdfdfd;
+}
+
+body {
+  font-family: var(--font-brand);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  body {
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+.print-header {
+  display: none;
+  border-bottom: 2px solid #1e293b;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media print {
+  .print-header {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

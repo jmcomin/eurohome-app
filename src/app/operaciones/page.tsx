@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import SearchInput from "@/components/SearchInput";
 import FilterOptions from "./FilterOptions";
 
+export const dynamic = 'force-dynamic';
+
 export default async function OperacionesPage({
     searchParams,
 }: {

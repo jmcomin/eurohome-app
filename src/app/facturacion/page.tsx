@@ -5,6 +5,8 @@ import ConfirmarCobroButton from "./ConfirmarCobroButton";
 import RevertirStatusButton from "./RevertirStatusButton";
 import PrintButton from "./PrintButton";
 
+export const dynamic = 'force-dynamic';
+
 export default async function FacturacionPage({
     searchParams,
 }: {

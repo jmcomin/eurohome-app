@@ -2,6 +2,8 @@ import { FileText, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const [pendienteEH, pendienteAgente, hitosPendientes, completadas, ultimosPagos] = await Promise.all([
     prisma.tramoComision.aggregate({

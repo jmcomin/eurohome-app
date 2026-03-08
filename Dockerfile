@@ -36,10 +36,14 @@ COPY --from=base /app/.next ./.next
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package.json ./package.json
 COPY --from=base /app/prisma ./prisma
+COPY --from=base /app/scripts ./scripts
+COPY --from=base /app/src ./src
+COPY --from=base /app/tsconfig.json ./tsconfig.json
+COPY --from=base ["/app/Liquidacion Comisiones para APP.xlsx", "./"]
 
 # Expose port (Railway defaults to 8080)
 EXPOSE 8080
 
 # Start application
 # This ensures the schema is pushed to the persistent volume on Railway before starting
-CMD npx prisma db push --skip-generate && PORT=8080 npm start
+CMD npx prisma db push --skip-generate && npm run import-data && PORT=8080 npm start

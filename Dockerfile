@@ -16,10 +16,11 @@ RUN touch prisma/dev.db
 
 # Generate Prisma Client
 RUN npx prisma generate
+RUN DATABASE_URL="file:./prisma/dev.db" npx prisma db push --skip-generate
 
 # Build application
 COPY . .
-RUN npm run build
+RUN DATABASE_URL="file:./prisma/dev.db" npm run build
 
 # Production image
 FROM node:20-slim AS runner
@@ -40,4 +41,5 @@ COPY --from=base /app/prisma ./prisma
 EXPOSE 3000
 
 # Start application
-CMD ["npm", "start"]
+# This ensures the schema is pushed to the persistent volume on Railway before starting
+CMD npx prisma db push --skip-generate && npm start

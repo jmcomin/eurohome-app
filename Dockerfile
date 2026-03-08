@@ -37,9 +37,9 @@ COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package.json ./package.json
 COPY --from=base /app/prisma ./prisma
 
-# Expose port
-EXPOSE 3000
+# Expose port (Railway defaults to 8080)
+EXPOSE 8080
 
 # Start application
 # This ensures the schema is pushed to the persistent volume on Railway before starting
-CMD npx prisma db push --skip-generate && npm start
+CMD npx prisma db push --skip-generate && PORT=8080 npm start
